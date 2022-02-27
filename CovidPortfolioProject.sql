@@ -2,9 +2,9 @@ SELECT *
 FROM PortfolioProject..CovidDeaths
 ORDER BY 3,4
 
---SELECT *
---FROM PortfolioProject..CovidVaccinations
---ORDER BY 3,4
+SELECT *
+FROM PortfolioProject..CovidVaccinations
+ORDER BY 3,4
 
 -- Select data that we are going to be using
 SELECT Location, date, total_cases, new_cases, total_deaths, population
@@ -53,13 +53,37 @@ WHERE continent is not null
 --GROUP BY date
 ORDER BY 1,2
 
-
 -- Joining covid deaths dataset with vaccinations dataset
 SELECT *
 FROM PortfolioProject..CovidDeaths dea
 JOIN PortfolioProject..CovidVaccinations vac
 	ON dea.location = vac.location
 	AND dea.date = vac.date
+
+-- Looking at how vaccinations affected total cases and deaths
+SELECT dea.date, dea.continent, dea.location, dea.total_cases, dea.total_deaths, vac.people_vaccinated
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.date = vac.date
+	AND dea.location = vac.location
+	AND dea.continent = vac.continent
+--WHERE vac.new_vaccinations is not NULL
+WHERE dea.continent is not NULL
+ORDER BY 3,1
+
+-- Looking at how vaccinations affected hospitalizations in the US
+SELECT dea.date, dea.location, vac.people_vaccinated, vac.people_fully_vaccinated 
+, FORMAT((vac.people_vaccinated/dea.population)*100, 'N3') AS percent_population_vaccinated
+, FORMAT((vac.people_fully_vaccinated/dea.population)*100, 'N3') AS percent_population_fully_vaccinated
+, FORMAT((dea.total_cases/dea.population)*100, 'N3') AS percent_population_infected
+, dea.hosp_patients, dea.icu_patients
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.date = vac.date
+	AND dea.location = vac.location
+WHERE dea.hosp_patients is not NULL
+AND dea.continent is not NULL
+AND dea.location = 'United States'
 
 -- Looking at total population vs vaccinations
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
@@ -114,7 +138,6 @@ JOIN PortfolioProject..CovidVaccinations vac
 SELECT *, (rolling_vaccinations/population)*100 AS percent_vaccinated
 FROM #PercentPopulationVaccinated
 
-
 -- Creating views to store data for later visualizations
 CREATE VIEW PercentPopulationVaccinated AS
 SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
@@ -134,3 +157,26 @@ CREATE VIEW USDeathPercentage AS
 SELECT Location, date, total_cases, total_deaths, (total_deaths/total_cases) * 100 AS death_percentage
 FROM PortfolioProject..CovidDeaths
 WHERE Location like '%states%'
+
+CREATE VIEW VaccinationsEffect2 AS
+SELECT dea.date, dea.location, dea.continent, dea.total_cases, dea.total_deaths, vac.people_vaccinated
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.date = vac.date
+	AND dea.location = vac.location
+	AND dea.continent = vac.continent
+WHERE dea.continent is not NULL
+
+CREATE VIEW VaccinationEffectUnitedStates AS
+SELECT dea.date, dea.location, vac.people_vaccinated, vac.people_fully_vaccinated 
+, FORMAT((vac.people_vaccinated/dea.population)*100, 'N3') AS percent_population_vaccinated
+, FORMAT((vac.people_fully_vaccinated/dea.population)*100, 'N3') AS percent_population_fully_vaccinated
+, FORMAT((dea.total_cases/dea.population)*100, 'N3') AS percent_population_infected
+, dea.hosp_patients, dea.icu_patients
+FROM PortfolioProject..CovidDeaths dea
+JOIN PortfolioProject..CovidVaccinations vac
+	ON dea.date = vac.date
+	AND dea.location = vac.location
+WHERE dea.hosp_patients is not NULL
+AND dea.continent is not NULL
+AND dea.location = 'United States'
