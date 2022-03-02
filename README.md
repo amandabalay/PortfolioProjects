@@ -14,7 +14,7 @@ After the data source was verified, I downloaded the full data .csv file. I spli
 - The countries with the highest percentages of their population infected with COVID-19 were Faeroe Islands (67.0%), Andorra (49.0%), Denmark (45.9%), and Gibraltar (45.0%).
 - The maximum percentage of population infected in the United States was 23.6%.
 - The country with the highest death count from COVID-19 was the United States at 941,889. 
-- The countries with the highest percentage of cases resulting in death were Yemen (18.1%), Sudan (6.3%), Peru (6.0%), Mexico (5.8%), Syria (5.7%), Somalia (5.1%), and Egypt (5.0%).
+- The countries with the highest percentage of cases resulting in death were Yemen (18.1%), Sudan (6.3%), Peru (6.0%), Mexico (5.8%), Syria (5.7%), and Somalia (5.1%).
 - At its highest vaccination count, Pitcairn Islands had 100% of its population of 47 vaccinated. 
 - The other countries with the highest vaccination counts compared to population were the United Arab Emirates (94.6%), Brunei (91.5%), Portugal (91.5%), and Singapore (89.8%).
 - The worldwide average percent of population fully vaccinated is now above 50%, and in the United States 64.4% of the population is fully vaccinated. 
